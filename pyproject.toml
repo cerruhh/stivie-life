@@ -1,0 +1,10 @@
+[project]
+name = "stivie-lifie"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "discord-py>=2.5.2",
+    "telnetlib3>=2.0.4",
+]
