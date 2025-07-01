@@ -1,0 +1,12 @@
+[credentials]
+username = "username"
+password = "password"
+host = "windows93.net"
+port = 8082
+
+[discord]
+watchtower_channel_id = 0000000000
+guild_id = 000000000
+token = "DISCORD_BOT_TOKEN"
+
+# Rename this file "config.toml" when filled in
