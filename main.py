@@ -73,7 +73,6 @@ class TelnetDiscordBridge:
                     pass
             if self.writer:
                 self.writer.close()
-                await self.writer.wait_closed()
             self.connected = False
             return True, "Disconnected."
         except Exception as e:
