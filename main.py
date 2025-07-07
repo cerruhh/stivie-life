@@ -3,8 +3,9 @@ import discord
 import tomllib
 import telnetlib3
 from discord import app_commands
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 import time
+import re
 
 CONFIG_FILE = "config.toml"
 
@@ -20,7 +21,16 @@ TELNET_PASS: str = config["credentials"]["password"]
 DISCORD_TOKEN: str = config["discord"]["token"]
 WATCHTOWER_CHANNEL_ID: int = config["discord"]["watchtower_channel_id"]
 GUILD_ID: int = config["discord"]["guild_id"]
+IGNORED_USERS:List[str] = config.get("discord").get("ignored_users")
 
+def remove_ignored_user_lines(text: str) -> str:
+    """
+    Removes all lines that start with '<USERNAME> says:' for any username in IGNORED_USERS.
+    """
+    # Build a regex pattern that matches any of the ignored users at the start of a line
+    pattern = r'^(?:' + '|'.join(re.escape(user) for user in IGNORED_USERS) + r') says:.*$'
+    # Remove matching lines
+    return re.sub(pattern, '', text, flags=re.MULTILINE).strip()
 
 class TelnetDiscordBridge:
     """
@@ -98,7 +108,7 @@ class TelnetDiscordBridge:
                 data: str = await self.reader.read(1024)
                 if data and self.discord_channel:
                     msg = f"```ansi\n{data}\n```"
-                    await self.discord_channel.send(msg)
+                    await self.discord_channel.send(remove_ignored_user_lines(text=msg))
         except asyncio.CancelledError:
             pass
         except Exception as e:
